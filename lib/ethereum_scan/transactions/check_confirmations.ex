@@ -5,8 +5,6 @@ defmodule EthereumScan.Transactions.CheckConfirmations do
 
   @transactions_info_url "https://api.blockcypher.com/v1/eth/main/txs/"
 
-  require Logger
-
   alias EthereumScan.Transactions.Adapter
   alias EthereumScan.Transactions.Transaction
 

@@ -51,7 +51,8 @@ defmodule EthereumScan.MixProject do
       {:ecto_enum, "~> 1.4"},
       {:httpoison, "~> 1.8"},
       {:floki, "~> 0.33.1"},
-      {:mox, "~> 1.0", only: :test}
+      {:mox, "~> 1.0", only: :test},
+      {:tailwind, "~> 0.1.9"}
     ]
   end
 
@@ -67,7 +68,7 @@ defmodule EthereumScan.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      "assets.deploy": ["esbuild default --minify", "phx.digest"]
+      "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"]
     ]
   end
 end

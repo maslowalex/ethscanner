@@ -19,6 +19,10 @@ defmodule EthereumScan.Transactions.Worker do
     {:ok, transaction}
   end
 
+  @doc """
+  It is a main function that decides on what's happening
+  when we encounter API / validation errors or successful confirmations fetch
+  """
   def handle_info(:check_confirmations, %Transaction{} = transaction) do
     case CheckConfirmations.call(transaction) do
       {:ok, confirmations} ->

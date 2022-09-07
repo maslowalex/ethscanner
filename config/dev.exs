@@ -26,7 +26,8 @@ config :ethereum_scan, EthereumScanWeb.Endpoint,
   secret_key_base: "5Y6pCxJknYWlO4wzBZQIaBNIWmEjSSVH3e/g3j0ysxxy92lGtPRBEcr+89FiZXDT",
   watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
-    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
+    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
+    tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
   ]
 
 # ## SSL Support
