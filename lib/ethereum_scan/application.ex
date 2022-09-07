@@ -11,7 +11,6 @@ defmodule EthereumScan.Application do
       EthereumScan.Repo,
       EthereumScanWeb.Telemetry,
       {Phoenix.PubSub, name: EthereumScan.PubSub},
-      {Registry, [keys: :unique, name: EthereumScan.Transaction.WorkerRegistry]},
       {DynamicSupervisor, strategy: :one_for_one, name: EthereumScan.DynamicSupervisor},
       EthereumScanWeb.Endpoint
     ]

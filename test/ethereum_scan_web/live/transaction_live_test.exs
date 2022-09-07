@@ -17,18 +17,12 @@ defmodule EthereumScanWeb.TransactionLiveTest do
     test "lists all transactions", %{conn: conn} do
       {:ok, _index_live, html} = live(conn, Routes.transaction_index_path(conn, :index))
 
-      assert html =~ "Listing Transactions"
+      assert html =~ "Tx hash to track"
     end
 
     test "saves new transaction", %{conn: conn} do
       {:ok, index_live, _html} = live(conn, Routes.transaction_index_path(conn, :index))
 
-      assert index_live |> element("a", "New Transaction") |> render_click() =~
-               "New Transaction"
-
-      assert_patch(index_live, Routes.transaction_index_path(conn, :new))
-
-      # assert "66" =~
       error_html =
         index_live
         |> form("#transaction-form", transaction: %{tx_hash: "ajsldka"})

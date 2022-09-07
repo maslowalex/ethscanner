@@ -8,13 +8,14 @@ defmodule EthereumScan.Transactions.Worker do
   alias EthereumScan.Transactions.Transaction
 
   @pooling_interval Application.compile_env!(:ethereum_scan, :confirmations_pooling_interval)
+  @initial_pooling_interval :timer.seconds(5)
 
   def start_link(%Transaction{status: :pending} = pending_transaction) do
-    GenServer.start_link(__MODULE__, pending_transaction, name: via_tuple(pending_transaction))
+    GenServer.start_link(__MODULE__, pending_transaction)
   end
 
   def init(%Transaction{} = transaction) do
-    Process.send_after(self(), :check_confirmations, @pooling_interval)
+    Process.send_after(self(), :check_confirmations, @initial_pooling_interval)
 
     {:ok, transaction}
   end
@@ -48,7 +49,9 @@ defmodule EthereumScan.Transactions.Worker do
   end
 
   defp handle_update_transaction({:error, %Ecto.Changeset{data: transaction, errors: errors}}) do
-    Logger.error("Error during updating the transaction #{transaction.tx_hash}, #{inspect(errors)}")
+    Logger.error(
+      "Error during updating the transaction #{transaction.tx_hash}, #{inspect(errors)}"
+    )
 
     {:stop, :error, transaction}
   end
@@ -56,16 +59,18 @@ defmodule EthereumScan.Transactions.Worker do
   defp handle_update_transaction({:ok, %Transaction{status: :pending} = transaction}) do
     Process.send_after(self(), :check_confirmations, @pooling_interval)
 
+    :ok = EthereumScan.Transactions.PubSub.broadcast(transaction)
+
     {:noreply, transaction}
   end
 
-  defp handle_update_transaction({:ok, %Transaction{tx_hash: tx_hash, status: status} = transaction}) do
+  defp handle_update_transaction(
+         {:ok, %Transaction{tx_hash: tx_hash, status: status} = transaction}
+       ) do
     Logger.info("Transaction #{tx_hash} is #{status}")
 
     :ok = EthereumScan.Transactions.PubSub.broadcast(transaction)
 
     {:stop, :normal, transaction}
   end
-
-  defp via_tuple(%Transaction{tx_hash: tx_hash}), do: {:via, Registry, {EthereumScan.Transaction.WorkerRegistry, tx_hash}}
 end

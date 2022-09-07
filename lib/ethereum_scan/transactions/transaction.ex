@@ -21,6 +21,7 @@ defmodule EthereumScan.Transactions.Transaction do
     |> cast(attrs, [:tx_hash])
     |> validate_required([:tx_hash])
     |> validate_length(:tx_hash, is: @transaction_hash_length)
+    |> unique_constraint(:tx_hash)
   end
 
   def update_changeset(transaction, attrs) do

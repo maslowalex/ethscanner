@@ -3,7 +3,10 @@ defmodule EthereumScan.Transactions do
   The Transactions context.
   """
 
-  @confirmations_to_confirmed Application.compile_env!(:ethereum_scan, :confirmations_to_confirmed)
+  @confirmations_to_confirmed Application.compile_env!(
+                                :ethereum_scan,
+                                :confirmations_to_confirmed
+                              )
 
   import Ecto.Query, warn: false
   alias EthereumScan.Repo
@@ -95,7 +98,9 @@ defmodule EthereumScan.Transactions do
     |> Repo.update()
   end
 
-  defp status_from_confirmations(confirmations) when confirmations > @confirmations_to_confirmed, do: :confirmed
+  defp status_from_confirmations(confirmations) when confirmations > @confirmations_to_confirmed,
+    do: :confirmed
+
   defp status_from_confirmations(_), do: :pending
 
   @doc """

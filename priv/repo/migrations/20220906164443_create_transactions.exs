@@ -9,5 +9,7 @@ defmodule EthereumScan.Repo.Migrations.CreateTransactions do
 
       timestamps()
     end
+
+    create unique_index(:transactions, :tx_hash)
   end
 end
