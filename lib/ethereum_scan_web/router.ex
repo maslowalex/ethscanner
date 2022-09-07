@@ -17,7 +17,8 @@ defmodule EthereumScanWeb.Router do
   scope "/", EthereumScanWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    live "/", TransactionLive.Index, :index
+    live "/transactions/new", TransactionLive.Index, :new
   end
 
   # Other scopes may use custom stacks.

@@ -1,0 +1,36 @@
+<h1>Listing Transactions</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.transaction_index_path(@socket, :index)}>
+    <.live_component
+      module={EthereumScanWeb.TransactionLive.FormComponent}
+      id={@transaction.id || :new}
+      title={@page_title}
+      action={@live_action}
+      transaction={@transaction}
+      return_to={Routes.transaction_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="transactions">
+    <%= for transaction <- @transactions do %>
+      <tr id={"transaction-#{transaction.id}"}>
+
+        <td>
+          <span><%= transaction.tx_hash %> </span>
+          <span><%= transaction.status %> </span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Transaction", to: Routes.transaction_index_path(@socket, :new) %></span>

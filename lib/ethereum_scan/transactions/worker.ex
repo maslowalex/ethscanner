@@ -55,8 +55,10 @@ defmodule EthereumScan.Transactions.Worker do
     {:noreply, transaction}
   end
 
-  defp handle_update_transaction({:ok, %Transaction{tx_hash: tx_hash, status: status}} = transaction) do
+  defp handle_update_transaction({:ok, %Transaction{tx_hash: tx_hash, status: status} = transaction}) do
     Logger.info("Transaction #{tx_hash} is #{status}")
+
+    :ok = EthereumScan.Transactions.PubSub.broadcast(transaction)
 
     {:stop, :normal, transaction}
   end

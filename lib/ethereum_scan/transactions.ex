@@ -9,6 +9,14 @@ defmodule EthereumScan.Transactions do
   alias EthereumScan.Repo
 
   alias EthereumScan.Transactions.Transaction
+  alias EthereumScan.Transactions.Worker
+
+  @doc """
+  Starts a worker in background that will be checking confirmations number
+  """
+  def start_check_confirmations_worker(%Transaction{} = transaction) do
+    DynamicSupervisor.start_child(EthereumScan.DynamicSupervisor, {Worker, transaction})
+  end
 
   @doc """
   Returns the list of transactions.
@@ -20,7 +28,9 @@ defmodule EthereumScan.Transactions do
 
   """
   def list_transactions do
-    Repo.all(Transaction)
+    Transaction
+    |> order_by([t], desc: t.inserted_at)
+    |> Repo.all()
   end
 
   @doc """
@@ -102,5 +112,9 @@ defmodule EthereumScan.Transactions do
   """
   def delete_transaction(%Transaction{} = transaction) do
     Repo.delete(transaction)
+  end
+
+  def change_transaction(%Transaction{} = transaction, attrs \\ %{}) do
+    Transaction.update_changeset(transaction, attrs)
   end
 end
